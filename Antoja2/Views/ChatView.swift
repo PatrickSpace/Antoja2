@@ -3,10 +3,12 @@ import SwiftUI
 struct ChatView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     @ObservedObject var viewModel: ChatViewModel
+    let userID: String
 
     @FocusState private var isComposerFocused: Bool
     @State private var showsPending = false
     @State private var showsSettings = false
+    @State private var showsProgress = false
 
     var body: some View {
         ZStack {
@@ -27,6 +29,11 @@ struct ChatView: View {
         .sheet(isPresented: $showsSettings) {
             SettingsView()
         }
+        .sheet(isPresented: $showsProgress) {
+            ProgressDashboardView(userID: userID)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+        }
         .alert("No pudimos completar la acción", isPresented: errorBinding) {
             Button("Entendido", role: .cancel) { viewModel.errorMessage = nil }
         } message: {
@@ -43,6 +50,12 @@ struct ChatView: View {
                     showsSettings = false
                 } label: {
                     Label("Chat", systemImage: "bubble.left.and.bubble.right")
+                }
+
+                Button {
+                    showsProgress = true
+                } label: {
+                    Label("Progreso", systemImage: "chart.bar.fill")
                 }
 
                 Button {
@@ -69,6 +82,18 @@ struct ChatView: View {
             }
 
             Spacer()
+
+            Button {
+                showsProgress = true
+            } label: {
+                Image(systemName: "chart.bar.fill")
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(AppTheme.green)
+                    .frame(width: 38, height: 38)
+                    .background(Color.white.opacity(0.82))
+                    .clipShape(Circle())
+            }
+            .accessibilityLabel("Abrir progreso")
 
             if !viewModel.pendingCravings.isEmpty {
                 Button {

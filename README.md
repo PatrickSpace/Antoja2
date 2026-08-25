@@ -2,7 +2,7 @@
 
 MVP personal para iOS que registra antojos mediante un chat. Antes de guardar, la IA muestra la comida estructurada, el rango de calorías y todos los supuestos usados; el usuario puede corregirlos conversando o registrar el borrador.
 
-Cuatro horas después, una notificación recuerda resolver el antojo como **Lo comí** o **No lo comí**. La segunda opción exige una confirmación adicional. Las calorías se contabilizan como consumidas o evitadas únicamente al resolver el resultado.
+Cuatro horas después, una notificación recuerda resolver el antojo como **Lo comí** o **No lo comí**. La segunda opción exige una confirmación adicional. Las calorías se contabilizan como consumidas o evitadas únicamente al resolver el resultado. La sección **Progreso** agrupa las calorías evitadas por semana y las presenta como una colección visual con gráfico, XP, racha de seguimientos e insignias.
 
 ## Arquitectura del MVP
 
@@ -44,4 +44,4 @@ El archivo `GoogleService-Info.plist` ya está asociado al target iOS. La app us
 
 ## Alcance actual
 
-Incluye login con Google, chat, aclaraciones y correcciones, registro en Firestore, pendientes mediante gesto hacia arriba, seguimiento de cuatro horas, doble confirmación de “No lo comí” y conteo de calorías consumidas/evitadas. Rachas, historial completo, sugerencias saludables según ubicación y Android quedan para la siguiente etapa.
+Incluye login con Google, chat, aclaraciones y correcciones, registro en Firestore, pendientes mediante gesto hacia arriba, seguimiento de cuatro horas, doble confirmación de “No lo comí”, conteo de calorías consumidas/evitadas y progreso semanal gamificado. Sugerencias saludables según ubicación y Android quedan para la siguiente etapa.
