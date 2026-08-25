@@ -81,7 +81,7 @@ final class ChatViewModel: ObservableObject {
                 messages.append(
                     ChatMessage(
                         role: .assistant,
-                        text: "No pude interpretar ese antojo ahora. Revisa tu conexión e inténtalo nuevamente."
+                        text: chatMessage(for: error)
                     )
                 )
             }
@@ -156,5 +156,12 @@ final class ChatViewModel: ObservableObject {
             return "¡Bien hecho! Confirmaste que no comiste \(craving.title). Sumamos aproximadamente \(craving.estimatedCaloriesMidpoint) kcal a tu total evitado."
         }
         return "Registrado: comiste \(craving.title). Sumamos aproximadamente \(craving.estimatedCaloriesMidpoint) kcal a tu total consumido. Seguimos sin culpas y con información útil."
+    }
+
+    private func chatMessage(for error: Error) -> String {
+        if case CravingInterpreterError.creditsExhausted = error {
+            return "El servicio de IA se quedó sin créditos. Ya avisamos el problema; inténtalo nuevamente más tarde."
+        }
+        return "No pude interpretar ese antojo ahora. Revisa tu conexión e inténtalo nuevamente."
     }
 }

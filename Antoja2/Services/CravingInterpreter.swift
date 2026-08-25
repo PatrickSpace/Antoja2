@@ -7,9 +7,15 @@ protocol CravingInterpreting {
 
 enum CravingInterpreterError: LocalizedError {
     case invalidResponse
+    case creditsExhausted
 
     var errorDescription: String? {
-        "La IA devolvió una respuesta incompleta. Intenta describir el antojo otra vez."
+        switch self {
+        case .invalidResponse:
+            "La IA devolvió una respuesta incompleta. Intenta describir el antojo otra vez."
+        case .creditsExhausted:
+            "El servicio de IA se quedó sin créditos. Inténtalo más tarde."
+        }
     }
 }
 
@@ -22,7 +28,15 @@ final class FirebaseCravingInterpreter: CravingInterpreting {
             payload["previousDraft"] = previousDraft.dictionary
         }
 
-        let result = try await functions.httpsCallable("interpretCraving").call(payload)
+        let result: HTTPSCallableResult
+        do {
+            result = try await functions.httpsCallable("interpretCraving").call(payload)
+        } catch {
+            if Self.isCreditsExhausted(error) {
+                throw CravingInterpreterError.creditsExhausted
+            }
+            throw error
+        }
         guard let data = result.data as? [String: Any] else {
             throw CravingInterpreterError.invalidResponse
         }
@@ -80,6 +94,17 @@ final class FirebaseCravingInterpreter: CravingInterpreting {
         if let value = value as? Int { return value }
         if let value = value as? NSNumber { return value.intValue }
         return nil
+    }
+
+    private static func isCreditsExhausted(_ error: Error) -> Bool {
+        let error = error as NSError
+        guard
+            error.domain == FunctionsErrorDomain,
+            error.code == FunctionsErrorCode.resourceExhausted.rawValue,
+            let details = error.userInfo[FunctionsErrorDetailsKey] as? [String: Any]
+        else { return false }
+
+        return details["reason"] as? String == "openai_credits_exhausted"
     }
 }
 

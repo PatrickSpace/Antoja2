@@ -131,9 +131,26 @@ exports.interpretCraving = onCall(
 
       if (!response.ok) {
         const responseText = await response.text();
+        const openAIError = parseOpenAIError(responseText);
+
+        if (isOpenAICreditError(response.status, openAIError)) {
+          logger.warn("OpenAI credits or spend limit exhausted", {
+            status: response.status,
+            code: openAIError.code,
+            type: openAIError.type,
+          });
+          throw new HttpsError(
+              "resource-exhausted",
+              "El servicio de IA se quedó sin créditos. Inténtalo más tarde.",
+              {reason: "openai_credits_exhausted"},
+          );
+        }
+
         logger.error("OpenAI response failed", {
           status: response.status,
-          body: responseText.slice(0, 500),
+          code: openAIError.code,
+          type: openAIError.type,
+          message: openAIError.message.slice(0, 300),
         });
         throw new HttpsError(
             "unavailable",
@@ -174,4 +191,33 @@ function findOutputText(output) {
     }
   }
   return null;
+}
+
+function parseOpenAIError(responseText) {
+  try {
+    const parsed = JSON.parse(responseText);
+    return {
+      code: typeof parsed?.error?.code === "string" ? parsed.error.code : "",
+      type: typeof parsed?.error?.type === "string" ? parsed.error.type : "",
+      message: typeof parsed?.error?.message === "string" ?
+        parsed.error.message : "",
+    };
+  } catch {
+    return {code: "", type: "", message: responseText};
+  }
+}
+
+function isOpenAICreditError(status, error) {
+  if (status !== 429) return false;
+
+  const creditErrorCodes = new Set([
+    "insufficient_quota",
+    "credit_balance_exhausted",
+    "organization_spend_limit_exceeded",
+    "project_spend_limit_exceeded",
+    "organization_usage_limit_exceeded",
+  ]);
+
+  return error.type === "insufficient_quota" ||
+    creditErrorCodes.has(error.code);
 }
