@@ -27,8 +27,16 @@ final class ChatViewModel: ObservableObject {
         ]
 
         repository.$pendingCravings
+            .dropFirst()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.pendingCravings = $0 }
+            .sink { [weak self] cravings in
+                self?.pendingCravings = cravings
+                Task {
+                    await NotificationService.shared.syncDailyPendingReminders(
+                        pendingCount: cravings.count
+                    )
+                }
+            }
             .store(in: &cancellables)
 
         repository.$errorMessage

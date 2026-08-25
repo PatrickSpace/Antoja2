@@ -93,6 +93,9 @@ final class AuthViewModel: ObservableObject {
             GIDSignIn.sharedInstance.signOut()
             try Auth.auth().signOut()
             user = nil
+            Task {
+                await NotificationService.shared.cancelDailyPendingReminders()
+            }
         } catch {
             errorMessage = error.localizedDescription
         }

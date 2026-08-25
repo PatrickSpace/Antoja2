@@ -2,7 +2,7 @@
 
 MVP personal para iOS que registra antojos mediante un chat. Antes de guardar, la IA muestra la comida estructurada, el rango de calorías y todos los supuestos usados; el usuario puede corregirlos conversando o registrar el borrador.
 
-Cuatro horas después, una notificación recuerda resolver el antojo como **Lo comí** o **No lo comí**. La segunda opción exige una confirmación adicional. Las calorías se contabilizan como consumidas o evitadas únicamente al resolver el resultado. La sección **Progreso** agrupa las calorías evitadas por semana y las presenta como una colección visual con gráfico, XP, racha de seguimientos e insignias.
+Cuatro horas después, una notificación recuerda resolver el antojo como **Lo comí** o **No lo comí**. Si quedan dos o más antojos pendientes, la app programa además un resumen diario privado a las 7:00 a. m. desde el día siguiente. La segunda opción exige una confirmación adicional. Las calorías se contabilizan como consumidas o evitadas únicamente al resolver el resultado. La sección **Progreso** agrupa las calorías evitadas por semana y las presenta como una colección visual con gráfico, XP, racha de seguimientos e insignias.
 
 ## Arquitectura del MVP
 

@@ -18,6 +18,10 @@ struct SettingsView: View {
 
                 Section("Seguimiento") {
                     LabeledContent("Pregunta de resultado", value: "Después de 4 horas")
+                    LabeledContent("Resumen de pendientes", value: "Diario, 7:00 a. m.")
+                    Text("Se programa desde el día siguiente cuando tienes 2 o más antojos sin decidir.")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.mutedInk)
 
                     Button("Activar notificaciones") {
                         Task {
