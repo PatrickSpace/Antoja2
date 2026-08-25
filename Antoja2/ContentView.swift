@@ -1,24 +1,23 @@
-//
-//  ContentView.swift
-//  Antoja2
-//
-//  Created by Patrick Lostaunau on 24/08/26.
-//
-
 import SwiftUI
+import FirebaseAuth
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
+    @EnvironmentObject private var authViewModel: AuthViewModel
 
-#Preview {
-    ContentView()
+    var body: some View {
+        Group {
+            if authViewModel.isResolvingSession {
+                ZStack {
+                    AppTheme.background.ignoresSafeArea()
+                    ProgressView()
+                        .tint(AppTheme.accent)
+                }
+            } else if let user = authViewModel.user {
+                MainContainerView(userID: user.uid)
+            } else {
+                LoginView()
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: authViewModel.user?.uid)
+    }
 }

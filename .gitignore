@@ -1,0 +1,29 @@
+.DS_Store
+DerivedData/
+build/
+
+# Xcode local state
+*.xcuserstate
+Antoja2.xcodeproj/xcuserdata/
+Antoja2.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+Secrets.xcconfig
+*.secret.local
+
+# Firebase local state
+functions/node_modules/
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Android local state (future client)
+android/.gradle/
+android/.idea/
+android/local.properties
+android/**/build/
+android/**/google-services.json
+*.iml
